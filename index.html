@@ -31,7 +31,7 @@
         <h2>Welcome to KUBA</h2>
         <p>KUBA is a revolutionary token on the TON blockchain. Join our pre-sale to get KUBA at an exclusive price!</p>
         <p>Pre-sale Price: 1 TON = 96,700 KUBA + 10% Bonus (9,670 KUBA)</p>
-        <p>Fee: 0.08 TON per transaction (covers gas ~0.036 TON and development)</p>
+        <p>Fee: 0.08 TON per transaction</p>
         <p>Limited: Only 2 Billion KUBA available! After CEX listing, we will burn 5 billion KUBA to boost value!</p>
         <p>TON raised will enhance liquidity on STON.fi and secure CEX listing (e.g., KuCoin).</p>
     </div>
@@ -91,6 +91,7 @@
             try {
                 const tonNano = tonAmount * 1e9;
                 const feeNano = 0.08 * 1e9;
+                const gasNano = 0.036 * 1e9; // Gas สำหรับเคลม KUBA
                 const kubaAmount = tonAmount * 96700;
                 const bonusKuba = kubaAmount * 0.1;
                 const tx = {
@@ -112,7 +113,7 @@
                         ton_amount: tonAmount
                     })
                 });
-                document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA soon.`;
+                document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA. Total gas fee for claiming: ${(tonAmount * 0.036).toFixed(3)} TON.`;
             } catch (e) {
                 document.getElementById('status').innerText = 'Transaction failed: ' + e.message;
             }
