@@ -5,14 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KUBA - Official Website</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; text-align: center; }
-        header { background-color: #1a73e8; color: white; padding: 20px; }
-        nav { background-color: #333; padding: 10px; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; }
-        .section { padding: 20px; margin: 20px; background-color: white; border-radius: 8px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        button { background-color: #1a73e8; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #1557b0; }
-        input { padding: 10px; margin: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('background.jpg'); /* ใส่ชื่อรูปที่นี่ */
+            background-size: cover; /* ขยายให้เต็มหน้า */
+            background-position: center; /* จัดกลาง */
+            background-repeat: no-repeat; /* ไม่ให้ซ้ำ */
+            text-align: center;
+            color: white; /* เปลี่ยนสีข้อความให้เห็นชัดบนพื้นหลัง */
+        }
+        header {
+            background-color: rgba(26, 115, 232, 0.7); /* ใส่ opacity เพื่อให้มองเห็นข้อความ */
+            padding: 20px;
+        }
+        nav {
+            background-color: rgba(51, 51, 51, 0.7); /* ใส่ opacity */
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .section {
+            padding: 20px;
+            margin: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* ใส่ opacity ขาว */
+            border-radius: 8px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: black; /* เปลี่ยนสีข้อความใน section */
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1557b0;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -31,9 +74,6 @@
         <h2>Welcome to KUBA</h2>
         <p>KUBA is a revolutionary token on the TON blockchain. Join our pre-sale to get KUBA at an exclusive price!</p>
         <p>Pre-sale Price: 1 TON = 96,700 KUBA + 10% Bonus (9,670 KUBA)</p>
-        <p>Fee: 0.08 TON per transaction</p>
-        <p>Limited: Only 2 Billion KUBA available! After CEX listing, we will burn 5 billion KUBA to boost value!</p>
-        <p>TON raised will enhance liquidity on STON.fi and secure CEX listing (e.g., KuCoin).</p>
     </div>
 
     <div id="whitepaper" class="section">
@@ -54,7 +94,6 @@
     <div id="swap" class="section">
         <h2>Buy KUBA with TON</h2>
         <p>Buy 96,700 KUBA with 1 TON + 9,670 KUBA Bonus!</p>
-        <p>Fee: 0.08 TON per transaction</p>
         <input type="number" id="tonAmount" placeholder="Enter TON amount (min 1 TON)" min="1" step="0.1">
         <button onclick="connectWallet()">Connect Wallet</button>
         <button onclick="buyKuba()" id="buyButton" disabled>Buy KUBA</button>
@@ -91,7 +130,6 @@
             try {
                 const tonNano = tonAmount * 1e9;
                 const feeNano = 0.08 * 1e9;
-                const gasNano = 0.036 * 1e9; // Gas สำหรับเคลม KUBA
                 const kubaAmount = tonAmount * 96700;
                 const bonusKuba = kubaAmount * 0.1;
                 const tx = {
@@ -113,7 +151,7 @@
                         ton_amount: tonAmount
                     })
                 });
-                document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA. Total gas fee for claiming: ${(tonAmount * 0.036).toFixed(3)} TON.`;
+                document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA.`;
             } catch (e) {
                 document.getElementById('status').innerText = 'Transaction failed: ' + e.message;
             }
