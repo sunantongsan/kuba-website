@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+pytonutils
+sqlite3
