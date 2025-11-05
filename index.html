@@ -64,7 +64,7 @@
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <script>
         const connector = new TONConnect({
-            manifestUrl: 'https://yourusername.github.io/kuba-website/tonconnect-manifest.json'
+            manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
         });
         let wallet = null;
 
@@ -89,21 +89,30 @@
                 return;
             }
             try {
-                const tonNano = tonAmount * 1e9; // TON to nanoTON
-                const feeNano = 0.08 * 1e9; // 0.08 TON fee
-                const kubaAmount = tonAmount * 96700; // 1 TON = 96,700 KUBA
-                const bonusKuba = kubaAmount * 0.1; // 10% bonus
+                const tonNano = tonAmount * 1e9;
+                const feeNano = 0.08 * 1e9;
+                const kubaAmount = tonAmount * 96700;
+                const bonusKuba = kubaAmount * 0.1;
                 const tx = {
                     validUntil: Math.floor(Date.now() / 1000) + 300,
                     messages: [{
-                        address: 'UQA1pHRQOC65_yqTH-VId3T6sEDtaBGccJsfk1iETs4zLUue',
+                        address: 'UQAfUj__LHqowEqTCKk2xaTFG8L2t_Pv46BiezvgeBnyRVTa',
                         amount: (tonNano + feeNano).toString(),
                         payload: btoa('pre-sale')
                     }]
                 };
-                await connector.sendTransaction(tx);
+                const txResult = await connector.sendTransaction(tx);
+                // ส่ง tx_id ไป backend
+                await fetch('https://kuba-backend.onrender.com/verify-transaction', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tx_id: txResult.hash,
+                        user_address: wallet.account.address,
+                        ton_amount: tonAmount
+                    })
+                });
                 document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA soon.`;
-                // Backend verifies transaction and sends KUBA
             } catch (e) {
                 document.getElementById('status').innerText = 'Transaction failed: ' + e.message;
             }
