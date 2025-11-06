@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('background.jpg'); /* ใส่ชื่อรูปที่นี่ */
+            background-image: url('background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -100,16 +100,47 @@
         <p id="status">Please connect your wallet</p>
     </div>
 
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <!-- รวม TonConnect SDK และโค้ด JavaScript ไว้ในนี้ -->
     <script>
-        // กำหนด connector ก่อนใช้งาน
-        const connector = new TONConnect({
-            manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
-        });
+        // กำหนด TonConnect SDK
+        (function() {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js';
+            script.onload = initializeTonConnect;
+            document.head.appendChild(script);
+        })();
+
+        let connector = null;
         let wallet = null;
+
+        function initializeTonConnect() {
+            connector = new TONConnect({
+                manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
+            });
+
+            // ตรวจสอบการเชื่อมต่ออัตโนมัติ
+            connector.onStatusChange(wallet => {
+                if (wallet) {
+                    wallet = wallet;
+                    document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
+                    document.getElementById('buyButton').disabled = false;
+                } else {
+                    wallet = null;
+                    document.getElementById('status').innerText = 'Please connect your wallet';
+                    document.getElementById('buyButton').disabled = true;
+                }
+            });
+
+            // เรียกสถานะเริ่มต้น
+            connector.restoreConnection();
+        }
 
         async function connectWallet() {
             try {
+                if (!connector) {
+                    document.getElementById('status').innerText = 'TonConnect is not initialized yet. Please wait...';
+                    return;
+                }
                 wallet = await connector.connect();
                 document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
                 document.getElementById('buyButton').disabled = false;
