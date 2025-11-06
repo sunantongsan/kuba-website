@@ -97,12 +97,15 @@
         <input type="number" id="tonAmount" placeholder="Enter TON amount (min 1 TON)" min="1" step="0.1">
         <button onclick="connectWallet()">Connect Wallet</button>
         <button onclick="buyKuba()" id="buyButton" disabled>Buy KUBA</button>
-        <p id="status">Please connect your wallet</p>
+        <p id="status">Initializing TonConnect, please wait...</p>
     </div>
 
-    <!-- รวม TonConnect SDK และโค้ด JavaScript ไว้ในนี้ -->
     <script>
-        // กำหนด TonConnect SDK
+        let connector = null;
+        let wallet = null;
+        let isInitialized = false;
+
+        // โหลด TonConnect SDK และเริ่มต้น
         (function() {
             const script = document.createElement('script');
             script.src = 'https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js';
@@ -110,18 +113,17 @@
             document.head.appendChild(script);
         })();
 
-        let connector = null;
-        let wallet = null;
-
         function initializeTonConnect() {
             connector = new TONConnect({
                 manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
             });
+            isInitialized = true;
+            document.getElementById('status').innerText = 'Please connect your wallet';
 
-            // ตรวจสอบการเชื่อมต่ออัตโนมัติ
-            connector.onStatusChange(wallet => {
-                if (wallet) {
-                    wallet = wallet;
+            // ตรวจสอบสถานะการเชื่อมต่ออัตโนมัติ
+            connector.onStatusChange(walletInfo => {
+                if (walletInfo) {
+                    wallet = walletInfo;
                     document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
                     document.getElementById('buyButton').disabled = false;
                 } else {
@@ -136,11 +138,11 @@
         }
 
         async function connectWallet() {
+            if (!isInitialized) {
+                document.getElementById('status').innerText = 'TonConnect is not initialized yet. Please wait...';
+                return;
+            }
             try {
-                if (!connector) {
-                    document.getElementById('status').innerText = 'TonConnect is not initialized yet. Please wait...';
-                    return;
-                }
                 wallet = await connector.connect();
                 document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
                 document.getElementById('buyButton').disabled = false;
@@ -173,7 +175,6 @@
                     }]
                 };
                 const txResult = await connector.sendTransaction(tx);
-                // ส่ง tx_id ไป backend
                 await fetch('https://kuba-backend.onrender.com/verify-transaction', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
