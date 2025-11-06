@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KUBA - Official Website</title>
+    <title>KUBA - Swap Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,8 +13,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            text-align: center;
             color: white;
+            text-align: center;
         }
         header {
             background-color: rgba(26, 115, 232, 0.7);
@@ -29,15 +29,26 @@
             margin: 0 15px;
             text-decoration: none;
         }
-        .section {
+        .swap-section {
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
-            margin: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
             color: black;
+        }
+        .swap-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .swap-box select, .swap-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         button {
             background-color: #1a73e8;
@@ -46,149 +57,72 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
         }
         button:hover {
             background-color: #1557b0;
         }
-        input {
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>KUBA - The Future of TON Ecosystem</h1>
-        <p>Join the Pre-sale Now! Exclusive Price for Early Investors!</p>
+        <h1>KUBA - Swap Page</h1>
+        <p>Exchange your TON for KUBA tokens!</p>
     </header>
     <nav>
         <a href="#home">Home</a>
         <a href="#whitepaper">Whitepaper</a>
         <a href="#roadmap">Roadmap</a>
-        <a href="#swap">Buy KUBA</a>
+        <a href="#swap">Swap</a>
     </nav>
 
-    <div id="home" class="section">
-        <h2>Welcome to KUBA</h2>
-        <p>KUBA is a revolutionary token on the TON blockchain. Join our pre-sale to get KUBA at an exclusive price!</p>
+    <div id="swap" class="swap-section">
+        <h2>Swap TON to KUBA</h2>
         <p>Pre-sale Price: 1 TON = 96,700 KUBA + 10% Bonus (9,670 KUBA)</p>
-    </div>
-
-    <div id="whitepaper" class="section">
-        <h2>Whitepaper</h2>
-        <p>Learn about KUBA's vision, tokenomics, and roadmap.</p>
-        <a href="https://drive.google.com/file/d/YOUR_WHITEPAPER_ID/view" target="_blank">
-            <button>Download Whitepaper</button>
-        </a>
-    </div>
-
-    <div id="roadmap" class="section">
-        <h2>Roadmap</h2>
-        <p>Q4 2025: Pre-sale and increase liquidity on STON.fi</p>
-        <p>Q1 2026: List on KuCoin, burn 5 billion KUBA</p>
-        <p>Q2 2026: Launch KUBA dApp or staking platform</p>
-    </div>
-
-    <div id="swap" class="section">
-        <h2>Buy KUBA with TON</h2>
-        <p>Buy 96,700 KUBA with 1 TON + 9,670 KUBA Bonus!</p>
-        <input type="number" id="tonAmount" placeholder="Enter TON amount (min 1 TON)" min="1" step="0.1">
-        <button onclick="connectWallet()">Connect Wallet</button>
-        <button onclick="buyKuba()" id="buyButton" disabled>Buy KUBA</button>
-        <p id="status">Initializing TonConnect, please wait...</p>
+        <div class="swap-box">
+            <label for="fromToken">From:</label>
+            <select id="fromToken" onchange="updateSwap()">
+                <option value="TON">TON</option>
+            </select>
+            <input type="number" id="fromAmount" placeholder="Enter TON amount" min="1" step="0.1" onchange="updateSwap()">
+        </div>
+        <div class="swap-box">
+            <label for="toToken">To:</label>
+            <select id="toToken" onchange="updateSwap()">
+                <option value="KUBA">KUBA</option>
+            </select>
+            <input type="number" id="toAmount" placeholder="KUBA received" readonly>
+        </div>
+        <button onclick="processSwap()">Swap</button>
+        <p id="status">Enter amount to start swapping</p>
     </div>
 
     <script>
-        let connector = null;
-        let wallet = null;
-        let isInitialized = false;
-
-        // โหลด TonConnect SDK และเริ่มต้น
-        (function() {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js';
-            script.onload = initializeTonConnect;
-            document.head.appendChild(script);
-        })();
-
-        function initializeTonConnect() {
-            connector = new TONConnect({
-                manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
-            });
-            isInitialized = true;
-            document.getElementById('status').innerText = 'Please connect your wallet';
-
-            // ตรวจสอบสถานะการเชื่อมต่ออัตโนมัติ
-            connector.onStatusChange(walletInfo => {
-                if (walletInfo) {
-                    wallet = walletInfo;
-                    document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
-                    document.getElementById('buyButton').disabled = false;
-                } else {
-                    wallet = null;
-                    document.getElementById('status').innerText = 'Please connect your wallet';
-                    document.getElementById('buyButton').disabled = true;
-                }
-            });
-
-            // เรียกสถานะเริ่มต้น
-            connector.restoreConnection();
+        function updateSwap() {
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+            const kubaBase = 96700;
+            const bonus = 0.1;
+            const toAmount = fromAmount * kubaBase * (1 + bonus);
+            document.getElementById('toAmount').value = isNaN(toAmount) ? 0 : toAmount.toLocaleString();
         }
 
-        async function connectWallet() {
-            if (!isInitialized) {
-                document.getElementById('status').innerText = 'TonConnect is not initialized yet. Please wait...';
+        async function processSwap() {
+            const tonAmount = parseFloat(document.getElementById('fromAmount').value);
+            if (tonAmount < 1 || isNaN(tonAmount)) {
+                document.getElementById('status').innerText = 'Minimum 1 TON required!';
                 return;
             }
-            try {
-                wallet = await connector.connect();
-                document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
-                document.getElementById('buyButton').disabled = false;
-            } catch (e) {
-                document.getElementById('status').innerText = 'Connection failed: ' + e.message;
-            }
+            const kubaAmount = tonAmount * 96700 * 1.1; // 96,700 + 10% bonus
+            document.getElementById('status').innerText = 'Processing swap... Please send ' + (tonAmount + 0.08).toFixed(2) + ' TON to UQAfUj__LHqowEqTCKk2xaTFG8L2t_Pv46BiezvgeBnyRVTa';
+            // ทีมงานจะตรวจสอบและโอน KUBA ด้วยมือหรือผ่าน backend
         }
 
-        async function buyKuba() {
-            if (!wallet) {
-                document.getElementById('status').innerText = 'Please connect wallet first!';
-                return;
-            }
-            const tonAmount = parseFloat(document.getElementById('tonAmount').value);
-            if (tonAmount < 1) {
-                document.getElementById('status').innerText = 'Minimum 1 TON!';
-                return;
-            }
-            try {
-                const tonNano = tonAmount * 1e9;
-                const feeNano = 0.08 * 1e9;
-                const kubaAmount = tonAmount * 96700;
-                const bonusKuba = kubaAmount * 0.1;
-                const tx = {
-                    validUntil: Math.floor(Date.now() / 1000) + 300,
-                    messages: [{
-                        address: 'UQAfUj__LHqowEqTCKk2xaTFG8L2t_Pv46BiezvgeBnyRVTa',
-                        amount: (tonNano + feeNano).toString(),
-                        payload: btoa('pre-sale')
-                    }]
-                };
-                const txResult = await connector.sendTransaction(tx);
-                await fetch('https://kuba-backend.onrender.com/verify-transaction', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        tx_id: txResult.hash,
-                        user_address: wallet.account.address,
-                        ton_amount: tonAmount
-                    })
-                });
-                document.getElementById('status').innerText = `Transaction sent! You will receive ${(kubaAmount + bonusKuba).toLocaleString()} KUBA.`;
-            } catch (e) {
-                document.getElementById('status').innerText = 'Transaction failed: ' + e.message;
-            }
-        }
+        // เรียกอัปเดตครั้งแรก
+        updateSwap();
     </script>
 </body>
 </html>
