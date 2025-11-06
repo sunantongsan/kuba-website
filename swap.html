@@ -84,7 +84,7 @@
         </div>
         <button id="connectButton" onclick="connectWallet()">Connect Wallet</button>
         <button id="swapButton" onclick="processSwap()" disabled>Swap</button>
-        <p id="status">Please connect your wallet to start</p>
+        <p id="status">Initializing, please wait...</p>
     </div>
 
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
@@ -92,26 +92,37 @@
         let connector = null;
         let wallet = null;
 
-        // เริ่มต้น TonConnect
+        // รอโหลดหน้าแล้วเริ่มต้น TonConnect
         document.addEventListener('DOMContentLoaded', () => {
-            connector = new TONConnect({
-                manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
-            });
+            // ตรวจสอบว่า SDK โหลดสำเร็จ
+            if (typeof TONConnect === 'undefined') {
+                document.getElementById('status').innerText = 'Failed to load TonConnect SDK. Please try again later.';
+                return;
+            }
 
-            connector.onStatusChange(walletInfo => {
-                wallet = walletInfo;
-                if (wallet) {
-                    document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
-                    document.getElementById('connectButton').style.display = 'none';
-                    document.getElementById('swapButton').disabled = false;
-                } else {
-                    document.getElementById('status').innerText = 'Please connect your wallet to start';
-                    document.getElementById('connectButton').style.display = 'block';
-                    document.getElementById('swapButton').disabled = true;
-                }
-            });
+            try {
+                connector = new TONConnect({
+                    manifestUrl: 'https://sunantongsan.github.io/kuba-website/tonconnect-manifest.json'
+                });
+                document.getElementById('status').innerText = 'Please connect your wallet to start';
 
-            connector.restoreConnection();
+                connector.onStatusChange(walletInfo => {
+                    wallet = walletInfo;
+                    if (wallet) {
+                        document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
+                        document.getElementById('connectButton').style.display = 'none';
+                        document.getElementById('swapButton').disabled = false;
+                    } else {
+                        document.getElementById('status').innerText = 'Please connect your wallet to start';
+                        document.getElementById('connectButton').style.display = 'block';
+                        document.getElementById('swapButton').disabled = true;
+                    }
+                });
+
+                connector.restoreConnection();
+            } catch (e) {
+                document.getElementById('status').innerText = 'Error initializing TonConnect: ' + e.message;
+            }
         });
 
         function updateSwap() {
@@ -123,6 +134,10 @@
         }
 
         async function connectWallet() {
+            if (!connector) {
+                document.getElementById('status').innerText = 'TonConnect is not initialized. Please wait or refresh the page.';
+                return;
+            }
             try {
                 wallet = await connector.connect();
                 document.getElementById('status').innerText = `Connected: ${wallet.account.address}`;
@@ -157,7 +172,6 @@
                 };
                 const txResult = await connector.sendTransaction(tx);
                 document.getElementById('status').innerText = 'Swap processing... Transaction sent! You will receive ' + kubaAmount.toLocaleString() + ' KUBA soon.';
-                // ส่ง tx_id ไป backend (ถ้าต้องการ)
                 await fetch('https://kuba-backend.onrender.com/verify-transaction', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
