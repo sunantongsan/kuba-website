@@ -14,7 +14,7 @@
             background-position: center;
             background-repeat: no-repeat;
             text-align: center;
-            color: #1e90ff; /* ตัวหนังสือสีน้ำเงิน */
+            color: #1e90ff;
         }
         header, nav, div {
             background: none;
@@ -25,31 +25,25 @@
         }
         h1, h2, p, a {
             margin: 10px 0;
-            color: #1e90ff; /* สีน้ำเงินเป็นพื้นฐาน */
-            text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32; /* เอฟเฟกต์ไฟลุกด้วยเงาสีเขียวและแดง */
-            animation: fire 1s infinite alternate; /* การเคลื่อนไหวแบบสลับ */
+            color: #1e90ff;
+            text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
+            animation: fire 1s infinite alternate;
         }
         @keyframes fire {
-            0% {
-                text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
-            }
-            50% {
-                text-shadow: 0 0 15px #ff0000, 0 0 25px #32cd32, 0 0 35px #ff0000;
-            }
-            100% {
-                text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
-            }
+            0% { text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32; }
+            50% { text-shadow: 0 0 15px #ff0000, 0 0 25px #32cd32, 0 0 35px #ff0000; }
+            100% { text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32; }
         }
         nav a {
-            color: #1e90ff; /* เปลี่ยนสีลิงก์ใน nav เป็นน้ำเงิน */
+            color: #1e90ff;
             margin: 0 15px;
             text-decoration: none;
             text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
             animation: fire 1s infinite alternate;
         }
         button {
-            background-color: #1e90ff; /* ปุ่มสีน้ำเงิน */
-            color: #ffffff; /* ข้อความในปุ่มสีขาวเพื่อตัดกับปุ่ม */
+            background-color: #1e90ff;
+            color: #ffffff;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -60,7 +54,7 @@
             animation: fire 1s infinite alternate;
         }
         button:hover {
-            background-color: #104e8b; /* เปลี่ยนสีเมื่อ hover เป็นน้ำเงินเข้ม */
+            background-color: #104e8b;
         }
     </style>
 </head>
@@ -85,8 +79,8 @@
     <div id="whitepaper">
         <h2>Whitepaper</h2>
         <p>Learn about KUBA's vision, tokenomics, and roadmap.</p>
-        <a href="https://drive.google.com/file/d/YOUR_WHITEPAPER_ID/view" target="_blank">
-            <button>Download Whitepaper</button>
+        <a href="whitepaper.html" target="_self">
+            <button>Read Whitepaper</button>
         </a>
     </div>
 
