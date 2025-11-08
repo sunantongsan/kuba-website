@@ -14,41 +14,53 @@
             background-position: center;
             background-repeat: no-repeat;
             text-align: center;
-            color: white;
+            color: #1e90ff; /* ตัวหนังสือสีน้ำเงิน */
         }
-        header {
-            background-color: rgba(26, 115, 232, 0.7);
-            padding: 20px;
+        header, nav, div {
+            background: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            border-radius: 0;
         }
-        nav {
-            background-color: rgba(51, 51, 51, 0.7);
-            padding: 10px;
+        h1, h2, p, a {
+            margin: 10px 0;
+            color: #1e90ff; /* สีน้ำเงินเป็นพื้นฐาน */
+            text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32; /* เอฟเฟกต์ไฟลุกด้วยเงาสีเขียวและแดง */
+            animation: fire 1s infinite alternate; /* การเคลื่อนไหวแบบสลับ */
+        }
+        @keyframes fire {
+            0% {
+                text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
+            }
+            50% {
+                text-shadow: 0 0 15px #ff0000, 0 0 25px #32cd32, 0 0 35px #ff0000;
+            }
+            100% {
+                text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
+            }
         }
         nav a {
-            color: white;
+            color: #1e90ff; /* เปลี่ยนสีลิงก์ใน nav เป็นน้ำเงิน */
             margin: 0 15px;
             text-decoration: none;
-        }
-        .section {
-            padding: 20px;
-            margin: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            color: black;
+            text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
+            animation: fire 1s infinite alternate;
         }
         button {
-            background-color: #1a73e8;
-            color: white;
+            background-color: #1e90ff; /* ปุ่มสีน้ำเงิน */
+            color: #ffffff; /* ข้อความในปุ่มสีขาวเพื่อตัดกับปุ่ม */
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 0 0 10px #32cd32, 0 0 20px #ff0000, 0 0 30px #32cd32;
+            animation: fire 1s infinite alternate;
         }
         button:hover {
-            background-color: #1557b0;
+            background-color: #104e8b; /* เปลี่ยนสีเมื่อ hover เป็นน้ำเงินเข้ม */
         }
     </style>
 </head>
@@ -64,13 +76,13 @@
         <a href="#swap">Buy KUBA</a>
     </nav>
 
-    <div id="home" class="section">
+    <div id="home">
         <h2>Welcome to KUBA</h2>
         <p>KUBA is a revolutionary token on the TON blockchain. Join our pre-sale to get KUBA at an exclusive price!</p>
         <p>Pre-sale Price: 1 TON = 96,700 KUBA + 10% Bonus (9,670 KUBA)</p>
     </div>
 
-    <div id="whitepaper" class="section">
+    <div id="whitepaper">
         <h2>Whitepaper</h2>
         <p>Learn about KUBA's vision, tokenomics, and roadmap.</p>
         <a href="https://drive.google.com/file/d/YOUR_WHITEPAPER_ID/view" target="_blank">
@@ -78,17 +90,17 @@
         </a>
     </div>
 
-    <div id="roadmap" class="section">
+    <div id="roadmap">
         <h2>Roadmap</h2>
         <p>Q4 2025: Pre-sale and increase liquidity on STON.fi</p>
         <p>Q1 2026: List on KuCoin, burn 5 billion KUBA</p>
         <p>Q2 2026: Launch KUBA dApp or staking platform</p>
     </div>
 
-    <div id="swap" class="section">
+    <div id="swap">
         <h2>Buy KUBA</h2>
         <p>Click below to start the exchange process!</p>
-        <a href="swap.html" target="_blank">
+        <a href="https://app.ston.fi/swap" target="_blank">
             <button>Buy KUBA Now</button>
         </a>
     </div>
